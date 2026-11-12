@@ -165,8 +165,8 @@
     <!-- MAIN DASHBOARD CONTENT -->
     <main class="max-w-7xl mx-auto px-4 py-6 flex-1 w-full space-y-6">
 
-        <!-- STAGE TITLE & QUICK STATS -->
-        <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 glass-panel p-5 rounded-xl">
+        <!-- STAGE TITLE HEADER -->
+        <div class="flex items-center justify-between glass-panel p-5 rounded-xl">
             <div class="flex items-center space-x-4">
                 <div id="stageIconContainer" class="w-14 h-14 rounded-xl bg-scada-cyan/10 border border-scada-cyan/30 flex items-center justify-center text-scada-cyan text-2xl shadow-inner">
                     <i class="fa-solid fa-truck-ramp-box"></i>
@@ -179,26 +179,6 @@
                         </span>
                     </div>
                     <h2 id="stageTitle" class="text-2xl font-bold text-white tracking-wide mt-1">Recepción</h2>
-                </div>
-            </div>
-
-            <!-- Quick Metrics Grid -->
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 w-full lg:w-auto font-mono">
-                <div class="bg-scada-bg/80 border border-scada-border p-2.5 rounded-lg text-center">
-                    <span class="text-[10px] text-slate-400 block uppercase">Flujo Promedio</span>
-                    <span id="metricFlow" class="text-sm font-bold text-scada-cyan">120 Ton/h</span>
-                </div>
-                <div class="bg-scada-bg/80 border border-scada-border p-2.5 rounded-lg text-center">
-                    <span class="text-[10px] text-slate-400 block uppercase">Temperatura</span>
-                    <span id="metricTemp" class="text-sm font-bold text-scada-amber">28.4 °C</span>
-                </div>
-                <div class="bg-scada-bg/80 border border-scada-border p-2.5 rounded-lg text-center">
-                    <span class="text-[10px] text-slate-400 block uppercase">Humedad Grano</span>
-                    <span id="metricHumidity" class="text-sm font-bold text-scada-green">13.2 %</span>
-                </div>
-                <div class="bg-scada-bg/80 border border-scada-border p-2.5 rounded-lg text-center">
-                    <span class="text-[10px] text-slate-400 block uppercase">Equipos Activos</span>
-                    <span id="metricEquip" class="text-sm font-bold text-white">4 / 4</span>
                 </div>
             </div>
         </div>
@@ -374,8 +354,8 @@
                 icon: "fa-filter-circle-xmark",
                 metrics: { flow: "95 Ton/h", temp: "31.0 °C", hum: "12.3 %", equip: "6 / 6" },
                 description: `
-                    <p>Acondicionamiento severo del grano mediante la integración de la <strong>Línea Desgerminación 04</strong> y la <strong>Limpieza 02</strong>.</p>
-                    <p>El flujo pasa por <strong>Tararas</strong> (aspiración neumática) y <strong>Sifters</strong> para remover cáscaras e impurezas finas, seguido de <strong>cocinas horizontales</strong> y <strong>unidades Satake</strong> para la separación biomecánica del germen del grano de maíz.</p>
+                    <p><strong>Limpieza:</strong> Es la fase inicial del acondicionamiento del grano de maíz ya seco, donde se emplean equipos especializados como <strong>tararas</strong> (para la separación por aspiración de polvo, impurezas ligeras y partículas livianas) y <strong>sifters</strong> (separadores tamizadores). Su objetivo principal es garantizar que el grano entre a los procesos mecánicos posteriores totalmente libre de cuerpos extraños, garantizando los estándares de inocuidad y calidad alimentaria.</p>
+                    <p><strong>Degerminación:</strong> Es el corazón mecánico del proceso donde se utiliza tecnología de punta (como los equipos <strong>Satake</strong> y las líneas integradas de degerminación) para fracturar el grano de maíz de manera controlada. El propósito fundamental es separar el endospermo (de donde se obtendrá la harina) del germen y la cascarilla, extrayendo este último sin pulverizarlo excesivamente para asegurar la pureza del producto y optimizar el rendimiento industrial.</p>
                 `,
                 equipment: [
                     { name: "Línea Desgerminación 04", tag: "DESG-L04", status: "Normal" },
@@ -602,12 +582,6 @@
             document.getElementById('stageBadge').innerText = `ETAPA 0${stage.id}`;
             document.getElementById('stageTitle').innerText = stage.name;
             document.getElementById('stageIconContainer').innerHTML = `<i class="fa-solid ${stage.icon}"></i>`;
-
-            // Update Metrics
-            document.getElementById('metricFlow').innerText = stage.metrics.flow;
-            document.getElementById('metricTemp').innerText = stage.metrics.temp;
-            document.getElementById('metricHumidity').innerText = stage.metrics.hum;
-            document.getElementById('metricEquip').innerText = stage.metrics.equip;
 
             // Update Description & Equipment List
             document.getElementById('stageDescription').innerHTML = stage.description;
