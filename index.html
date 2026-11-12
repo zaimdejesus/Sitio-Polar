@@ -218,6 +218,17 @@
             </div>
 
         </div>
+        <!-- DOCUMENTOS PDF -->
+        <div id="docsSection" class="glass-panel p-6 rounded-xl border border-scada-border hidden">
+            <div class="flex items-center justify-between border-b border-scada-border pb-3 mb-4">
+                <h3 class="text-base font-bold uppercase tracking-wider text-slate-200 flex items-center gap-2">
+                    <i class="fa-solid fa-file-pdf text-scada-cyan"></i> Documentos
+                </h3>
+                <span class="text-xs text-slate-400">Códigos de motores</span>
+            </div>
+            <div id="docsList" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+        </div>
+
 
     </main>
 
@@ -475,6 +486,20 @@
                 ]
             }
         ];
+// DOCUMENTOS PDF POR ETAPA
+const docsByStage = {
+    1: [{ name: "Equipos de Recepción y Preparación", file: "equipos-recepcion.pdf" }],
+    3: [{ name: "Equipos de Recepción y Preparación (incluye ventiladores de silos)", file: "equipos-recepcion.pdf" }],
+    4: [
+        { name: "Equipos de Limpieza", file: "equipos-limpieza.pdf" },
+        { name: "Equipos de Desgerminación", file: "equipos-desgerminacion.pdf" }
+    ],
+    5: [{ name: "Equipos de Laminación", file: "equipos-laminacion.pdf" }],
+    6: [{ name: "Equipos de Molienda", file: "equipos-molienda.pdf" }],
+    7: [{ name: "Equipos de Humidificación (hoja dentro del listado de Molienda)", file: "equipos-molienda.pdf" }],
+    8: [{ name: "Equipos de Empaque", file: "equipos-empaque.pdf" }]
+};
+
 
         // GLOBAL APP STATE
         let activeStageId = 1;
@@ -588,6 +613,7 @@
             document.getElementById('equipmentCountBadge').innerText = `${stage.equipment.length} Equipos`;
 
             renderEquipmentList(stage.equipment);
+            renderDocs(stage.id);
 
             // Clear search box if any
             document.getElementById('searchInput').value = '';
@@ -616,6 +642,28 @@
                 container.appendChild(item);
             });
         }
+function renderDocs(stageId) {
+    const section = document.getElementById('docsSection');
+    const list = document.getElementById('docsList');
+    const docs = docsByStage[stageId] || [];
+    list.innerHTML = '';
+    if (docs.length === 0) { section.classList.add('hidden'); return; }
+    section.classList.remove('hidden');
+    docs.forEach(d => {
+        const a = document.createElement('a');
+        a.href = d.file;
+        a.className = "flex items-center justify-between bg-scada-bg/90 border border-scada-border hover:border-scada-cyan/60 p-3 rounded-lg transition group";
+        a.innerHTML = `
+            <div class="flex items-center space-x-3">
+                <i class="fa-solid fa-file-pdf text-scada-cyan"></i>
+                <span class="text-xs font-semibold text-slate-200 group-hover:text-scada-cyan transition">${d.name}</span>
+            </div>
+            <i class="fa-solid fa-download text-xs text-slate-500 group-hover:text-scada-cyan transition"></i>
+        `;
+        list.appendChild(a);
+    });
+}
+
 
         // FILTER EQUIPMENT FROM SEARCH BAR
         function filterEquipment() {
