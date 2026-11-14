@@ -3,222 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SCADA/HMI - Alimentos Polar Chivacoa</title>
-    <!-- Tailwind CSS -->
+    <meta name="google" content="notranslate">
+    <title>Proceso de producción - Alimentos Polar Chivacoa</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        scada: {
-                            bg: '#121820',
-                            card: '#1e2638',
-                            border: '#2a354d',
-                            cyan: '#00f0ff',
-                            green: '#00ff88',
-                            amber: '#ffb700',
-                            red: '#ff3b30'
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'monospace']
-                    }
-                }
-            }
+            theme: { extend: {
+                colors: { scada: { bg: '#121820', card: '#1e2638', border: '#2a354d', cyan: '#00f0ff', green: '#00ff88', amber: '#ffb700' } },
+                fontFamily: { sans: ['Inter', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] }
+            } }
         }
     </script>
-    <!-- Google Fonts & Font Awesome Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body {
-            background-color: #121820;
-            color: #e2e8f0;
-            font-family: 'Inter', sans-serif;
-        }
-        /* Custom Scrollbars */
-        ::-webkit-scrollbar {
-            height: 6px;
-            width: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #121820;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #2a354d;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #00f0ff;
-        }
-        /* Pulsing SCADA Animations */
-        @keyframes statusPulse {
-            0% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.4); }
-            70% { box-shadow: 0 0 0 8px rgba(0, 255, 136, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0); }
-        }
-        .pulse-active {
-            animation: statusPulse 2s infinite;
-        }
-        /* Flow Diagram Lines */
-        .scada-connector {
-            position: relative;
-        }
-        .scada-connector::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            right: -24px;
-            width: 24px;
-            height: 2px;
-            background: #2a354d;
-            z-index: 1;
-        }
-        .scada-connector.active::after {
-            background: #00f0ff;
-            box-shadow: 0 0 8px #00f0ff;
-        }
-        /* Glassmorphism Effect */
-        .glass-panel {
-            background: rgba(30, 38, 56, 0.85);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(42, 53, 77, 0.8);
-        }
+        body { background-color: #121820; color: #e2e8f0; font-family: 'Inter', sans-serif; }
+        ::-webkit-scrollbar { height: 6px; width: 6px; }
+        ::-webkit-scrollbar-track { background: #121820; }
+        ::-webkit-scrollbar-thumb { background: #2a354d; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #00f0ff; }
+        .glass-panel { background: rgba(30, 38, 56, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(42, 53, 77, 0.8); }
     </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between selection:bg-scada-cyan selection:text-black">
 
-    <!-- TOP HEADER / SCADA BAR -->
     <header class="glass-panel sticky top-0 z-50 px-4 py-3 shadow-lg border-b border-scada-border">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-            
-            <!-- Logo & Title -->
-            <div class="flex items-center space-x-3 w-full md:w-auto justify-between md:justify-start">
-                <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-scada-cyan to-blue-600 flex items-center justify-center text-black font-bold text-xl shadow-lg shadow-scada-cyan/20">
-                        <i class="fa-solid fa-industry"></i>
-                    </div>
-                    <div>
-                        <h1 class="text-lg font-bold tracking-wider text-white uppercase flex items-center gap-2">
-                            Alimentos Polar <span class="text-xs px-2 py-0.5 rounded bg-scada-cyan/10 text-scada-cyan border border-scada-cyan/30">Chivacoa</span>
-                        </h1>
-                        <p class="text-xs text-slate-400 font-mono">SCADA / HMI CONTROL SYSTEM v4.2</p>
-                    </div>
+            <div class="flex items-center space-x-3 w-full md:w-auto">
+                <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-scada-cyan to-blue-600 flex items-center justify-center text-black font-bold text-xl shadow-lg shadow-scada-cyan/20">
+                    <i class="fa-solid fa-industry"></i>
                 </div>
-
-                <!-- Live Status Clock (Mobile Right) -->
-                <div class="md:hidden text-right font-mono text-xs">
-                    <div id="clock-mobile" class="text-scada-cyan font-bold">00:00:00</div>
-                    <div class="text-[10px] text-scada-green flex items-center justify-end gap-1">
-                        <span class="w-2 h-2 rounded-full bg-scada-green animate-ping"></span> ONLINE
-                    </div>
+                <div>
+                    <h1 class="text-lg font-bold tracking-wider text-white uppercase flex items-center gap-2">
+                        Alimentos Polar <span class="text-xs px-2 py-0.5 rounded bg-scada-cyan/10 text-scada-cyan border border-scada-cyan/30">Chivacoa</span>
+                    </h1>
+                    <p class="text-xs text-slate-400 font-mono">Guía didáctica del proceso</p>
                 </div>
             </div>
-
-            <!-- Global Telemetry Header Info -->
-            <div class="hidden md:flex items-center space-x-6 text-xs font-mono">
-                <div class="flex items-center space-x-2 bg-scada-bg px-3 py-1.5 rounded-md border border-scada-border">
-                    <i class="fa-solid fa-microchip text-scada-cyan"></i>
-                    <span class="text-slate-400">PLC MAIN:</span>
-                    <span class="text-scada-green font-bold">RUNNING</span>
-                </div>
-                <div class="flex items-center space-x-2 bg-scada-bg px-3 py-1.5 rounded-md border border-scada-border">
-                    <i class="fa-solid fa-gauge-high text-scada-amber"></i>
-                    <span class="text-slate-400">PLANTA EFICIENCIA:</span>
-                    <span class="text-white font-bold">98.4%</span>
-                </div>
-                <div class="flex items-center space-x-2 bg-scada-bg px-3 py-1.5 rounded-md border border-scada-border">
-                    <i class="fa-regular fa-clock text-scada-cyan"></i>
-                    <span id="clock-desktop" class="text-scada-cyan font-bold">00:00:00</span>
-                </div>
-            </div>
-
-            <!-- Controls (Sound & Global Search) -->
             <div class="flex items-center space-x-2 w-full md:w-auto justify-end">
                 <button id="soundToggleBtn" onclick="toggleAudio()" class="px-3 py-1.5 rounded-md bg-scada-bg border border-scada-border hover:border-scada-cyan text-xs text-slate-300 hover:text-scada-cyan transition flex items-center gap-2">
                     <i id="soundIcon" class="fa-solid fa-volume-high text-scada-cyan"></i>
-                    <span id="soundText" class="hidden sm:inline">Audio SCADA</span>
+                    <span id="soundText" class="hidden sm:inline">Sonido</span>
                 </button>
                 <div class="relative flex-1 md:w-48">
                     <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-xs text-slate-500"></i>
                     <input type="text" id="searchInput" onkeyup="filterEquipment()" placeholder="Buscar equipo..." class="w-full bg-scada-bg border border-scada-border rounded-md pl-8 pr-3 py-1 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-scada-cyan transition">
                 </div>
             </div>
-
         </div>
     </header>
 
-    <!-- STAGE NAVIGATION BAR (HORIZONTAL SCROLL) -->
     <nav class="bg-scada-bg border-b border-scada-border sticky top-[65px] z-40 shadow-inner">
-        <div class="max-w-7xl mx-auto px-4 overflow-x-auto no-scrollbar">
-            <div class="flex space-x-2 py-2 min-w-max" id="stageTabsContainer">
-                <!-- Dynamic Tabs injected by JS -->
-            </div>
+        <div class="max-w-7xl mx-auto px-4 overflow-x-auto">
+            <div class="flex space-x-2 py-2 min-w-max" id="stageTabsContainer"></div>
         </div>
     </nav>
 
-    <!-- MAIN DASHBOARD CONTENT -->
     <main class="max-w-7xl mx-auto px-4 py-6 flex-1 w-full space-y-6">
 
-        <!-- STAGE TITLE HEADER -->
         <div class="flex items-center justify-between glass-panel p-5 rounded-xl">
             <div class="flex items-center space-x-4">
-                <div id="stageIconContainer" class="w-14 h-14 rounded-xl bg-scada-cyan/10 border border-scada-cyan/30 flex items-center justify-center text-scada-cyan text-2xl shadow-inner">
-                    <i class="fa-solid fa-truck-ramp-box"></i>
-                </div>
+                <div id="stageIconContainer" class="w-14 h-14 rounded-xl bg-scada-cyan/10 border border-scada-cyan/30 flex items-center justify-center text-scada-cyan text-2xl shadow-inner"></div>
                 <div>
-                    <div class="flex items-center space-x-2">
-                        <span id="stageBadge" class="text-[10px] font-mono px-2 py-0.5 rounded bg-scada-cyan/20 text-scada-cyan border border-scada-cyan/40">ETAPA 01</span>
-                        <span class="inline-flex items-center gap-1.5 text-xs text-scada-green font-mono">
-                            <span class="w-2 h-2 rounded-full bg-scada-green pulse-active"></span> OPERACIONAL
-                        </span>
-                    </div>
+                    <span id="stageBadge" class="text-[10px] font-mono px-2 py-0.5 rounded bg-scada-cyan/20 text-scada-cyan border border-scada-cyan/40">ETAPA 01</span>
                     <h2 id="stageTitle" class="text-2xl font-bold text-white tracking-wide mt-1">Recepción</h2>
                 </div>
             </div>
         </div>
 
-        <!-- MAIN CONTENT LAYOUT: PROCESS DESCRIPTION & REGISTERED EQUIPMENT -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-
-            <!-- PROCESS DESCRIPTION CARD (7 Cols) -->
             <div class="lg:col-span-7">
                 <div class="glass-panel p-6 rounded-xl border border-scada-border h-full">
-                    <div class="flex items-center justify-between border-b border-scada-border pb-3 mb-4">
+                    <div class="border-b border-scada-border pb-3 mb-4">
                         <h3 class="text-base font-bold uppercase tracking-wider text-slate-200 flex items-center gap-2">
                             <i class="fa-solid fa-file-lines text-scada-cyan"></i> Descripción del Proceso
                         </h3>
-                        <i class="fa-solid fa-circle-info text-slate-500 text-sm"></i>
                     </div>
-                    <div id="stageDescription" class="text-sm text-slate-300 leading-relaxed space-y-4 font-normal">
-                        <!-- Dynamic Description injected via JS -->
-                    </div>
+                    <div id="stageDescription" class="text-sm text-slate-300 leading-relaxed space-y-4 font-normal"></div>
                 </div>
             </div>
-
-            <!-- REGISTERED EQUIPMENT LIST CARD (5 Cols) -->
             <div class="lg:col-span-5">
                 <div class="glass-panel p-6 rounded-xl border border-scada-border h-full">
                     <div class="flex items-center justify-between border-b border-scada-border pb-3 mb-4">
                         <h3 class="text-base font-bold uppercase tracking-wider text-slate-200 flex items-center gap-2">
-                            <i class="fa-solid fa-gears text-scada-cyan"></i> Equipos Registrados
+                            <i class="fa-solid fa-gears text-scada-cyan"></i> Equipos
                         </h3>
-                        <span id="equipmentCountBadge" class="text-xs font-mono bg-scada-cyan/20 text-scada-cyan px-2.5 py-1 rounded border border-scada-cyan/40">4 Equipos</span>
+                        <span id="equipmentCountBadge" class="text-xs font-mono bg-scada-cyan/20 text-scada-cyan px-2.5 py-1 rounded border border-scada-cyan/40"></span>
                     </div>
-                    
-                    <div id="equipmentList" class="space-y-2.5 max-h-[420px] overflow-y-auto pr-1">
-                        <!-- Dynamic Equipment List injected via JS -->
-                    </div>
+                    <div id="equipmentList" class="space-y-2.5 max-h-[420px] overflow-y-auto pr-1"></div>
                 </div>
             </div>
-
         </div>
-        <!-- DOCUMENTOS PDF -->
+
         <div id="docsSection" class="glass-panel p-6 rounded-xl border border-scada-border hidden">
             <div class="flex items-center justify-between border-b border-scada-border pb-3 mb-4">
                 <h3 class="text-base font-bold uppercase tracking-wider text-slate-200 flex items-center gap-2">
@@ -229,483 +108,189 @@
             <div id="docsList" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
         </div>
 
-
     </main>
 
-    <!-- FOOTER -->
     <footer class="glass-panel border-t border-scada-border py-4 mt-8">
-        <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between text-xs text-slate-400 gap-2">
-            <div class="flex items-center space-x-2">
-                <span class="w-2 h-2 rounded-full bg-scada-green"></span>
-                <span>Planta Alimentos Polar Chivacoa - Sistema de Supervisión y Control Industrial</span>
-            </div>
-            <div class="font-mono text-[11px] text-slate-500">
-                Diseñado para despliegue continuo GitHub Pages | 2026
-            </div>
+        <div class="max-w-7xl mx-auto px-4 text-xs text-slate-400 text-center md:text-left">
+            Planta Alimentos Polar Chivacoa - Material didáctico para pasantes - 2026
         </div>
     </footer>
 
-    <!-- INTERACTIVE MODAL FOR EQUIPMENT STATUS INSPECTION -->
-    <div id="equipModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="glass-panel max-w-md w-full rounded-xl border border-scada-cyan/40 shadow-2xl p-6 relative animate-fade-in">
-            <button onclick="closeModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-            <div class="flex items-center space-x-3 mb-4">
-                <div class="w-10 h-10 rounded-lg bg-scada-cyan/20 border border-scada-cyan text-scada-cyan flex items-center justify-center text-xl">
-                    <i class="fa-solid fa-microchip"></i>
-                </div>
-                <div>
-                    <h3 id="modalEquipName" class="text-lg font-bold text-white">Nombre Equipo</h3>
-                    <p id="modalEquipTag" class="text-xs font-mono text-scada-cyan">TAG: EQ-000</p>
-                </div>
-            </div>
-
-            <div class="space-y-3 font-mono text-xs mb-6 bg-scada-bg p-4 rounded-lg border border-scada-border">
-                <div class="flex justify-between border-b border-scada-border/60 pb-2">
-                    <span class="text-slate-400">Estado de Operación:</span>
-                    <span id="modalStatus" class="text-scada-green font-bold">NORMAL / ACTIVE</span>
-                </div>
-                <div class="flex justify-between border-b border-scada-border/60 pb-2">
-                    <span class="text-slate-400">Horas Acumuladas:</span>
-                    <span class="text-slate-200">12,480 hrs</span>
-                </div>
-                <div class="flex justify-between border-b border-scada-border/60 pb-2">
-                    <span class="text-slate-400">Temperatura Motor:</span>
-                    <span class="text-scada-amber">42.1 °C</span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-slate-400">Consumo Eléctrico:</span>
-                    <span class="text-scada-cyan">18.5 kW</span>
-                </div>
-            </div>
-
-            <div class="flex gap-3">
-                <button onclick="toggleModalEquipState()" class="flex-1 py-2.5 rounded-lg bg-scada-cyan/20 border border-scada-cyan text-scada-cyan hover:bg-scada-cyan hover:text-black font-semibold text-xs transition uppercase tracking-wider">
-                    <i class="fa-solid fa-power-off mr-1"></i> Alternar Estado
-                </button>
-                <button onclick="closeModal()" class="px-4 py-2.5 rounded-lg bg-scada-border hover:bg-slate-700 text-slate-300 font-semibold text-xs transition">
-                    Cerrar
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- JAVASCRIPT APPLICATION LOGIC -->
     <script>
-        // DATA STRUCTURE: 8 PROCESS STAGES OF ALIMENTOS POLAR CHIVACOA
         const stagesData = [
             {
-                id: 1,
-                name: "Recepción",
-                icon: "fa-truck-field",
-                metrics: { flow: "150 Ton/h", temp: "27.5 °C", hum: "13.5 %", equip: "4 / 4" },
+                id: 1, name: "Recepción", icon: "fa-truck-field",
                 description: `
                     <p>Recepción y clasificación inicial de materia prima (maíz crudo) proveniente del transporte terrestre.</p>
-                    <p>El grano desciende a través de <strong>tolvas de recepción</strong> de alto volumen hacia los sistemas de <strong>descargas mecánicas</strong> automatizadas, pasando por una etapa previa de <strong>prelimpieza</strong> para remover impurezas gruesas antes de su almacenamiento preliminar.</p>
-                `,
-                equipment: [
-                    { name: "Tolvas de Recepción", tag: "TOLV-01/02", status: "Normal" },
-                    { name: "Descargas Mecánicas", tag: "DESC-MEC-1", status: "Normal" },
-                    { name: "Sistemas de Prelimpieza", tag: "PRE-LIMP-A", status: "Normal" },
-                    { name: "Básculas de Pesaje Entrada", tag: "BASC-ENT-1", status: "Normal" }
-                ],
-                nodes: [
-                    { id: "N1", title: "Muestreo Grano", status: "Normal", type: "sensor" },
-                    { id: "N2", title: "Tolvas Recepción", status: "Normal", type: "process" },
-                    { id: "N3", title: "Prelimpieza", status: "Normal", type: "process" },
-                    { id: "N4", title: "Transferencia a Secado", status: "Normal", type: "output" }
-                ]
+                    <p>El grano desciende a través de <strong>tolvas de recepción</strong> de alto volumen hacia los sistemas de <strong>descargas mecánicas</strong> automatizadas, pasando por una etapa previa de <strong>prelimpieza</strong> para remover impurezas gruesas antes de su almacenamiento preliminar.</p>`,
+                equipment: ["Tolvas de Recepción", "Descargas Mecánicas", "Sistemas de Prelimpieza", "Básculas de Pesaje Entrada"],
+                docs: [["Equipos de Recepción y Preparación", "equipos-recepcion.pdf"]]
             },
             {
-                id: 2,
-                name: "Secado",
-                icon: "fa-fire-flame-curved",
-                metrics: { flow: "120 Ton/h", temp: "68.0 °C", hum: "12.0 %", equip: "3 / 3" },
+                id: 2, name: "Secado", icon: "fa-fire-flame-curved",
                 description: `
                     <p>Proceso térmico continuo para la reducción controlada de humedad en el maíz recién recibido.</p>
-                    <p>Utiliza <strong>secadoras industriales de columna y flujo continuo</strong> altamente eficientes, garantizando la conservación idónea del grano y previniendo la proliferación de hongos e impurezas orgánicas.</p>
-                `,
-                equipment: [
-                    { name: "Secadoras Industriales de Columna", tag: "SEC-COL-01", status: "Normal" },
-                    { name: "Secadoras de Flujo Continuo", tag: "SEC-FC-02", status: "Normal" },
-                    { name: "Sensores de Control de Humedad", tag: "SEN-HUM-G", status: "Normal" }
-                ],
-                nodes: [
-                    { id: "N1", title: "Alimentación Secado", status: "Normal", type: "input" },
-                    { id: "N2", title: "Torre de Secado Columna", status: "Normal", type: "process" },
-                    { id: "N3", title: "Enfriamiento Post-Secado", status: "Normal", type: "process" },
-                    { id: "N4", title: "Salida Silos", status: "Normal", type: "output" }
-                ]
+                    <p>Utiliza <strong>secadoras industriales de columna y flujo continuo</strong> altamente eficientes, garantizando la conservación idónea del grano y previniendo la proliferación de hongos e impurezas orgánicas.</p>`,
+                equipment: ["Secadoras Industriales de Columna", "Secadoras de Flujo Continuo", "Sensores de Control de Humedad"],
+                docs: []
             },
             {
-                id: 3,
-                name: "Silos",
-                icon: "fa-warehouse",
-                metrics: { flow: "200 Ton/h", temp: "22.1 °C", hum: "12.1 %", equip: "6 / 6" },
+                id: 3, name: "Silos", icon: "fa-warehouse",
                 description: `
                     <p>Almacenamiento masivo y seguro del grano seco en los <strong>silos principales de materia prima</strong>.</p>
-                    <p>Cuenta con un sistema avanzado de <strong>aireación forzada</strong> y <strong>monitoreo termométrico continuo</strong> a través de sensores distribuidos para mantener la calidad optima de la materia prima durante periodos prolongados.</p>
-                `,
-                equipment: [
-                    { name: "Silos Principales de Materia Prima", tag: "SILO-MAT-01..06", status: "Normal" },
-                    { name: "Sistema de Aireación Forzada", tag: "AIR-SYS-03", status: "Normal" },
-                    { name: "Red de Monitoreo de Temperatura", tag: "TERM-MON-NET", status: "Normal" }
-                ],
-                nodes: [
-                    { id: "N1", title: "Elevador Principal", status: "Normal", type: "process" },
-                    { id: "N2", title: "Silos de Almacenamiento", status: "Normal", type: "process" },
-                    { id: "N3", title: "Sistema Aireación", status: "Normal", type: "sensor" },
-                    { id: "N4", title: "Extracción a Limpieza", status: "Normal", type: "output" }
-                ]
+                    <p>Cuenta con un sistema avanzado de <strong>aireación forzada</strong> y <strong>monitoreo termométrico continuo</strong> a través de sensores distribuidos para mantener la calidad óptima de la materia prima durante periodos prolongados.</p>`,
+                equipment: ["Silos Principales de Materia Prima", "Sistema de Aireación Forzada", "Red de Monitoreo de Temperatura"],
+                docs: [["Equipos de Recepción y Preparación (incluye ventiladores de silos)", "equipos-recepcion.pdf"]]
             },
             {
-                id: 4,
-                name: "Limpieza / Desgerminación",
-                icon: "fa-filter-circle-xmark",
-                metrics: { flow: "95 Ton/h", temp: "31.0 °C", hum: "12.3 %", equip: "6 / 6" },
+                id: 4, name: "Limpieza / Desgerminación", icon: "fa-filter-circle-xmark",
                 description: `
                     <p><strong>Limpieza:</strong> Es la fase inicial del acondicionamiento del grano de maíz ya seco, donde se emplean equipos especializados como <strong>tararas</strong> (para la separación por aspiración de polvo, impurezas ligeras y partículas livianas) y <strong>sifters</strong> (separadores tamizadores). Su objetivo principal es garantizar que el grano entre a los procesos mecánicos posteriores totalmente libre de cuerpos extraños, garantizando los estándares de inocuidad y calidad alimentaria.</p>
-                    <p><strong>Degerminación:</strong> Es el corazón mecánico del proceso donde se utiliza tecnología de punta (como los equipos <strong>Satake</strong> y las líneas integradas de degerminación) para fracturar el grano de maíz de manera controlada. El propósito fundamental es separar el endospermo (de donde se obtendrá la harina) del germen y la cascarilla, extrayendo este último sin pulverizarlo excesivamente para asegurar la pureza del producto y optimizar el rendimiento industrial.</p>
-                `,
-                equipment: [
-                    { name: "Línea Desgerminación 04", tag: "DESG-L04", status: "Normal" },
-                    { name: "Línea Limpieza 02", tag: "LIMP-L02", status: "Normal" },
-                    { name: "Tararas de Aspiración", tag: "TAR-ASP-1/2", status: "Normal" },
-                    { name: "Sifters de Clasificación", tag: "SIFT-CLAS-04", status: "Normal" },
-                    { name: "Cocinas Horizontales", tag: "COC-HORIZ-01", status: "Normal" },
-                    { name: "Unidades Desgermina Satake", tag: "SATAKE-DESG-1", status: "Normal" }
-                ],
-                nodes: [
-                    { id: "N1", title: "Limpieza 02 (Tararas)", status: "Normal", type: "process" },
-                    { id: "N2", title: "Cocinas Horizontales", status: "Normal", type: "process" },
-                    { id: "N3", title: "Línea Desgerminación 04 (Satake)", status: "Normal", type: "process" },
-                    { id: "N4", title: "Sifters Separadores", status: "Normal", type: "output" }
-                ]
+                    <p><strong>Degerminación:</strong> Es el corazón mecánico del proceso donde se utiliza tecnología de punta (como los equipos <strong>Satake</strong> y las líneas integradas de degerminación) para fracturar el grano de maíz de manera controlada. El propósito fundamental es separar el endospermo (de donde se obtendrá la harina) del germen y la cascarilla, extrayendo este último sin pulverizarlo excesivamente para asegurar la pureza del producto y optimizar el rendimiento industrial.</p>`,
+                equipment: ["Línea Desgerminación 04", "Línea Limpieza 02", "Tararas de Aspiración", "Sifters de Clasificación", "Cocinas Horizontales", "Unidades Desgermina Satake"],
+                docs: [["Equipos de Limpieza", "equipos-limpieza.pdf"], ["Equipos de Desgerminación", "equipos-desgerminacion.pdf"]]
             },
             {
-                id: 5,
-                name: "Laminación",
-                icon: "fa-scroll",
-                metrics: { flow: "80 Ton/h", temp: "45.2 °C", hum: "14.1 %", equip: "7 / 7" },
+                id: 5, name: "Laminación", icon: "fa-scroll",
                 description: `
                     <p>Transformación física del grano condicionado en hojuelas mediante tratamiento térmico y prensado.</p>
-                    <p>El material ingresa a <strong>bines metálicos superiores</strong>, dosificado mecánicamente por <strong>Rotoflow</strong> hacia las <strong>cocinas verticales</strong>. Pasa por los <strong>laminadores</strong>, <strong>secadoras/enfriadoras</strong>, <strong>molinos de premolienda</strong> y se deposita en los <strong>silos de hojuela molida</strong>.</p>
-                `,
-                equipment: [
-                    { name: "Bines Metálicos Superiores", tag: "BIN-SUP-01/02", status: "Normal" },
-                    { name: "Dosificadores Rotoflow", tag: "ROT-DOS-01", status: "Normal" },
-                    { name: "Cocinas Verticales", tag: "COC-VERT-01", status: "Normal" },
-                    { name: "Laminadores Industriales", tag: "LAM-IND-01/02", status: "Normal" },
-                    { name: "Secadoras / Enfriadoras", tag: "SEC-ENFR-01", status: "Normal" },
-                    { name: "Molinos de Premolienda", tag: "MOL-PREM-01", status: "Normal" },
-                    { name: "Silos de Hojuela Molida", tag: "SILO-HOJ-01", status: "Normal" }
-                ],
-                nodes: [
-                    { id: "N1", title: "Bines Sup / Rotoflow", status: "Normal", type: "input" },
-                    { id: "N2", title: "Cocina Vertical", status: "Normal", type: "process" },
-                    { id: "N3", title: "Laminador & Secadora", status: "Normal", type: "process" },
-                    { id: "N4", title: "Premolienda & Silo Hojuela", status: "Normal", type: "output" }
-                ]
+                    <p>El material ingresa a <strong>bines metálicos superiores</strong>, dosificado mecánicamente por <strong>Rotoflow</strong> hacia las <strong>cocinas verticales</strong>. Pasa por los <strong>laminadores</strong>, <strong>secadoras/enfriadoras</strong>, <strong>molinos de premolienda</strong> y se deposita en los <strong>silos de hojuela molida</strong>.</p>`,
+                equipment: ["Bines Metálicos Superiores", "Dosificadores Rotoflow", "Cocinas Verticales", "Laminadores Industriales", "Secadoras / Enfriadoras", "Molinos de Premolienda", "Silos de Hojuela Molida"],
+                docs: [["Equipos de Laminación", "equipos-laminacion.pdf"]]
             },
             {
-                id: 6,
-                name: "Molienda",
-                icon: "fa-wheat-awn",
-                metrics: { flow: "75 Ton/h", temp: "33.5 °C", hum: "12.8 %", equip: "5 / 5" },
+                id: 6, name: "Molienda", icon: "fa-wheat-awn",
                 description: `
                     <p>Reducción granulométrica precisa del producto para la obtención de harina de maíz de alta finura.</p>
-                    <p>Utiliza <strong>molinos Bühler de 2 y 4 rodillos</strong> de alta tecnología, complementados por <strong>unidades Satake</strong>, <strong>Sifters de clasificación de pasajes</strong>, <strong>Tararas de aspiración</strong> y <strong>Filtros de manga</strong> para retención de fino.</p>
-                `,
-                equipment: [
-                    { name: "Molinos Bühler (2 y 4 Rodillos)", tag: "MOL-BUHLER-01..04", status: "Normal" },
-                    { name: "Unidades Molienda Satake", tag: "MOL-SATAKE-02", status: "Normal" },
-                    { name: "Sifters de Clasificación", tag: "SIFT-MOL-01/02", status: "Normal" },
-                    { name: "Tararas de Aspiración", tag: "TAR-MOL-01", status: "Normal" },
-                    { name: "Filtros Manga Industriales", tag: "FILT-MANGA-01", status: "Normal" }
-                ],
-                nodes: [
-                    { id: "N1", title: "Molinos Bühler", status: "Normal", type: "process" },
-                    { id: "N2", title: "Sifters Pasajes", status: "Normal", type: "process" },
-                    { id: "N3", title: "Tararas & Filtros Manga", status: "Normal", type: "process" },
-                    { id: "N4", title: "Transferencia Humidificación", status: "Normal", type: "output" }
-                ]
+                    <p>Utiliza <strong>molinos Bühler de 2 y 4 rodillos</strong> de alta tecnología, complementados por <strong>unidades Satake</strong>, <strong>Sifters de clasificación de pasajes</strong>, <strong>Tararas de aspiración</strong> y <strong>Filtros de manga</strong> para retención de fino.</p>`,
+                equipment: ["Molinos Bühler (2 y 4 Rodillos)", "Unidades Molienda Satake", "Sifters de Clasificación", "Tararas de Aspiración", "Filtros Manga Industriales"],
+                docs: [["Equipos de Molienda", "equipos-molienda.pdf"]]
             },
             {
-                id: 7,
-                name: "Humidificación y Vitaminas",
-                icon: "fa-flask-vial",
-                metrics: { flow: "70 Ton/h", temp: "26.8 °C", hum: "14.2 %", equip: "3 / 3" },
+                id: 7, name: "Humidificación y Vitaminas", icon: "fa-flask-vial",
                 description: `
                     <p>Ajuste de humedad final y fortificación nutricional de la harina según especificaciones de calidad nacional e internacional.</p>
-                    <p>Pasa por <strong>humidificadores industriales</strong>, sistemas micro-dosificadores de premezcla de <strong>vitaminas y hierro</strong>, integrados mediante <strong>sinfines de mezcla y transferencia rápida</strong>.</p>
-                `,
-                equipment: [
-                    { name: "Humidificadores Industriales", tag: "HUM-IND-01", status: "Normal" },
-                    { name: "Dosificación Micronutrientes (Hierro/Vit)", tag: "DOS-VIT-01", status: "Normal" },
-                    { name: "Sinfines de Mezcla y Transferencia", tag: "SINF-TRANS-01/02", status: "Normal" }
-                ],
-                nodes: [
-                    { id: "N1", title: "Humidificador", status: "Normal", type: "process" },
-                    { id: "N2", title: "Dosificación Micronutrientes", status: "Normal", type: "sensor" },
-                    { id: "N3", title: "Sinfín Homogeneizador", status: "Normal", type: "process" },
-                    { id: "N4", title: "Silos Producto Terminado", status: "Normal", type: "output" }
-                ]
+                    <p>Pasa por <strong>humidificadores industriales</strong>, sistemas micro-dosificadores de premezcla de <strong>vitaminas y hierro</strong>, integrados mediante <strong>sinfines de mezcla y transferencia rápida</strong>.</p>`,
+                equipment: ["Humidificadores Industriales", "Dosificación Micronutrientes (Hierro/Vit)", "Sinfines de Mezcla y Transferencia"],
+                docs: [["Equipos de Humidificación (hoja dentro del listado de Molienda)", "equipos-molienda.pdf"]]
             },
             {
-                id: 8,
-                name: "Empaque y Paletizado",
-                icon: "fa-boxes-packing",
-                metrics: { flow: "65 Ton/h", temp: "25.0 °C", hum: "13.8 %", equip: "12 / 12" },
+                id: 8, name: "Empaque y Paletizado", icon: "fa-boxes-packing",
                 description: `
                     <p>Extracción desde silos de producto terminado por sinfines hacia sifters, entoleter (pulverizador grumos), bajantes con imanes y bines metálicos con imán de entrada.</p>
                     <div class="mt-2 space-y-2 border-l-2 border-scada-cyan pl-3 text-xs">
                         <p><strong>• Línea SIG:</strong> Formado horizontal con mandriles (90% mecánica / 10% eléctrica). Dirige la bolsa hacia una <strong>enfardadora</strong> para formar bultos y de allí a las <strong>paletizadoras</strong>.</p>
                         <p><strong>• Línea Rovema:</strong> Formado vertical automatizado (electrónica avanzada). Pasa por máquina <strong>Polypack</strong> y es conducido hacia un <strong>brazo robótico</strong> para el paletizado.</p>
-                    </div>
-                `,
-                equipment: [
-                    { name: "Silos de Producto Terminado", tag: "SILO-PT-01..04", status: "Normal" },
-                    { name: "Sinfines de Distribución", tag: "SINF-DIST-01", status: "Normal" },
-                    { name: "Sifters de Clasificación Final", tag: "SIFT-FIN-01", status: "Normal" },
-                    { name: "Entoleter (Pulverizador Grumos)", tag: "ENTOL-01", status: "Normal" },
-                    { name: "Bajantes e Imanes de Retención", tag: "MAG-SEP-01", status: "Normal" },
-                    { name: "Bines Metálicos c/ Imán Entrada", tag: "BIN-MAG-01", status: "Normal" },
-                    { name: "Máquinas Embaladoras SIG", tag: "SIG-EMB-01..04", status: "Normal" },
-                    { name: "Enfardadora de Bultos (Línea SIG)", tag: "ENFARD-SIG-1", status: "Normal" },
-                    { name: "Máquinas Empacadoras Rovema", tag: "ROV-EMP-01/02", status: "Normal" },
-                    { name: "Empacadora Polypack (Línea Rovema)", tag: "POLY-ROV-01", status: "Normal" },
-                    { name: "Brazo Robótico Paletizador (Rovema)", tag: "ROBOT-PAL-1", status: "Normal" },
-                    { name: "Estaciones Paletizadoras Estándar", tag: "PALET-CONV-1", status: "Normal" }
-                ],
-                nodes: [
-                    { id: "N1", title: "Entoleter / Imanes", status: "Normal", type: "process" },
-                    { id: "N2", title: "Empaque SIG (Horizontal)", status: "Normal", type: "process" },
-                    { id: "N3", title: "Empaque Rovema (Vertical)", status: "Normal", type: "process" },
-                    { id: "N4", title: "Brazo Robótico / Paletizado", status: "Normal", type: "output" }
-                ]
+                    </div>`,
+                equipment: ["Silos de Producto Terminado", "Sinfines de Distribución", "Sifters de Clasificación Final", "Entoleter (Pulverizador Grumos)", "Bajantes e Imanes de Retención", "Bines Metálicos c/ Imán Entrada", "Máquinas Embaladoras SIG", "Enfardadora de Bultos (Línea SIG)", "Máquinas Empacadoras Rovema", "Empacadora Polypack (Línea Rovema)", "Brazo Robótico Paletizador (Rovema)", "Estaciones Paletizadoras Estándar"],
+                docs: [["Equipos de Empaque", "equipos-empaque.pdf"]]
             }
         ];
-// DOCUMENTOS PDF POR ETAPA
-const docsByStage = {
-    1: [{ name: "Equipos de Recepción y Preparación", file: "equipos-recepcion.pdf" }],
-    3: [{ name: "Equipos de Recepción y Preparación (incluye ventiladores de silos)", file: "equipos-recepcion.pdf" }],
-    4: [
-        { name: "Equipos de Limpieza", file: "equipos-limpieza.pdf" },
-        { name: "Equipos de Desgerminación", file: "equipos-desgerminacion.pdf" }
-    ],
-    5: [{ name: "Equipos de Laminación", file: "equipos-laminacion.pdf" }],
-    6: [{ name: "Equipos de Molienda", file: "equipos-molienda.pdf" }],
-    7: [{ name: "Equipos de Humidificación (hoja dentro del listado de Molienda)", file: "equipos-molienda.pdf" }],
-    8: [{ name: "Equipos de Empaque", file: "equipos-empaque.pdf" }]
-};
 
-
-        // GLOBAL APP STATE
         let activeStageId = 1;
         let audioEnabled = true;
-        let activeModalEquipment = null;
         let audioCtx = null;
 
-        // INITIALIZE APP ON LOAD
-        window.addEventListener('DOMContentLoaded', () => {
-            renderTabs();
-            loadStage(1);
-            startClock();
-        });
+        window.addEventListener('DOMContentLoaded', () => { loadStage(1); });
 
-        // CLOCK FUNCTION
-        function startClock() {
-            const updateTime = () => {
-                const now = new Date();
-                const timeStr = now.toTimeString().split(' ')[0];
-                document.getElementById('clock-desktop').innerText = timeStr;
-                document.getElementById('clock-mobile').innerText = timeStr;
-            };
-            updateTime();
-            setInterval(updateTime, 1000);
-        }
-
-        // AUDIO FEEDBACK SYNTHESIZER (WEB AUDIO API - NO EXTERNAL ASSETS)
         function playBeep(freq = 800, type = 'sine', duration = 0.08) {
             if (!audioEnabled) return;
             try {
                 if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 if (audioCtx.state === 'suspended') audioCtx.resume();
-                
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
-                
                 osc.type = type;
                 osc.frequency.value = freq;
                 gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
-                
                 osc.connect(gain);
                 gain.connect(audioCtx.destination);
-                
                 osc.start();
                 osc.stop(audioCtx.currentTime + duration);
-            } catch (e) {
-                console.log("Audio play blocked", e);
-            }
+            } catch (e) { console.log("Audio bloqueado", e); }
         }
 
         function toggleAudio() {
             audioEnabled = !audioEnabled;
-            const icon = document.getElementById('soundIcon');
-            const text = document.getElementById('soundText');
-            
-            if (audioEnabled) {
-                icon.className = 'fa-solid fa-volume-high text-scada-cyan';
-                text.innerText = 'Audio SCADA';
-                playBeep(1200, 'sine', 0.1);
-            } else {
-                icon.className = 'fa-solid fa-volume-xmark text-slate-500';
-                text.innerText = 'Audio Mute';
-            }
+            document.getElementById('soundIcon').className = audioEnabled ? 'fa-solid fa-volume-high text-scada-cyan' : 'fa-solid fa-volume-xmark text-slate-500';
+            document.getElementById('soundText').innerText = audioEnabled ? 'Sonido' : 'Silencio';
+            if (audioEnabled) playBeep(1200, 'sine', 0.1);
         }
 
-        // RENDER TOP STAGE NAVIGATION TABS
         function renderTabs() {
             const container = document.getElementById('stageTabsContainer');
             container.innerHTML = '';
-
             stagesData.forEach(stage => {
                 const isActive = stage.id === activeStageId;
                 const tab = document.createElement('button');
-                tab.onclick = () => {
-                    playBeep(600, 'triangle', 0.05);
-                    loadStage(stage.id);
-                };
-                
+                tab.onclick = () => { playBeep(600, 'triangle', 0.05); loadStage(stage.id); };
                 tab.className = `flex items-center space-x-2 px-4 py-2 rounded-lg font-medium text-xs transition duration-200 uppercase tracking-wide whitespace-nowrap ${
-                    isActive 
-                    ? 'bg-scada-cyan/20 text-scada-cyan border border-scada-cyan/50 shadow-lg shadow-scada-cyan/10 font-bold' 
+                    isActive
+                    ? 'bg-scada-cyan/20 text-scada-cyan border border-scada-cyan/50 shadow-lg shadow-scada-cyan/10 font-bold'
                     : 'bg-scada-card text-slate-400 hover:text-white border border-scada-border hover:border-slate-500'
                 }`;
-
                 tab.innerHTML = `
-                    <span class="font-mono text-[10px] opacity-75">${stage.id < 10 ? '0' + stage.id : stage.id}.</span>
+                    <span class="font-mono text-[10px] opacity-75">0${stage.id}.</span>
                     <i class="fa-solid ${stage.icon} text-sm"></i>
-                    <span>${stage.name}</span>
-                `;
-
+                    <span>${stage.name}</span>`;
                 container.appendChild(tab);
             });
         }
 
-        // LOAD SELECTED STAGE INTO DASHBOARD
         function loadStage(stageId) {
             activeStageId = stageId;
             const stage = stagesData.find(s => s.id === stageId);
             if (!stage) return;
-
             renderTabs();
-
-            // Update Stage Header
             document.getElementById('stageBadge').innerText = `ETAPA 0${stage.id}`;
             document.getElementById('stageTitle').innerText = stage.name;
             document.getElementById('stageIconContainer').innerHTML = `<i class="fa-solid ${stage.icon}"></i>`;
-
-            // Update Description & Equipment List
             document.getElementById('stageDescription').innerHTML = stage.description;
-            document.getElementById('equipmentCountBadge').innerText = `${stage.equipment.length} Equipos`;
-
+            document.getElementById('equipmentCountBadge').innerText = `${stage.equipment.length} equipos`;
             renderEquipmentList(stage.equipment);
-            renderDocs(stage.id);
-
-            // Clear search box if any
+            renderDocs(stage.docs);
             document.getElementById('searchInput').value = '';
         }
 
-        // RENDER EQUIPMENT LIST (CLEAN WITHOUT 'NORMAL' TAGS)
         function renderEquipmentList(equipment) {
             const container = document.getElementById('equipmentList');
             container.innerHTML = '';
-
-            equipment.forEach((eq, index) => {
+            equipment.forEach(name => {
                 const item = document.createElement('div');
-                item.className = "flex items-center justify-between bg-scada-bg/90 border border-scada-border hover:border-scada-cyan/60 p-3 rounded-lg transition cursor-pointer group";
-                item.onclick = () => openEquipModal(eq);
-
+                item.className = "flex items-center space-x-3 bg-scada-bg/90 border border-scada-border p-3 rounded-lg";
                 item.innerHTML = `
-                    <div class="flex items-center space-x-3">
-                        <span class="w-2 h-2 rounded-full bg-scada-cyan group-hover:bg-scada-green transition"></span>
-                        <div>
-                            <div class="text-xs font-semibold text-slate-200 group-hover:text-scada-cyan transition">${eq.name}</div>
-                            <div class="text-[10px] font-mono text-slate-400">TAG: ${eq.tag}</div>
-                        </div>
-                    </div>
-                    <i class="fa-solid fa-chevron-right text-xs text-slate-500 group-hover:text-scada-cyan transition"></i>
-                `;
+                    <span class="w-2 h-2 rounded-full bg-scada-cyan"></span>
+                    <span class="text-xs font-semibold text-slate-200">${name}</span>`;
                 container.appendChild(item);
             });
         }
-function renderDocs(stageId) {
-    const section = document.getElementById('docsSection');
-    const list = document.getElementById('docsList');
-    const docs = docsByStage[stageId] || [];
-    list.innerHTML = '';
-    if (docs.length === 0) { section.classList.add('hidden'); return; }
-    section.classList.remove('hidden');
-    docs.forEach(d => {
-        const a = document.createElement('a');
-        a.href = d.file;
-        a.className = "flex items-center justify-between bg-scada-bg/90 border border-scada-border hover:border-scada-cyan/60 p-3 rounded-lg transition group";
-        a.innerHTML = `
-            <div class="flex items-center space-x-3">
-                <i class="fa-solid fa-file-pdf text-scada-cyan"></i>
-                <span class="text-xs font-semibold text-slate-200 group-hover:text-scada-cyan transition">${d.name}</span>
-            </div>
-            <i class="fa-solid fa-download text-xs text-slate-500 group-hover:text-scada-cyan transition"></i>
-        `;
-        list.appendChild(a);
-    });
-}
 
-
-        // FILTER EQUIPMENT FROM SEARCH BAR
         function filterEquipment() {
             const query = document.getElementById('searchInput').value.toLowerCase();
             const stage = stagesData.find(s => s.id === activeStageId);
             if (!stage) return;
-
-            const filtered = stage.equipment.filter(e => 
-                e.name.toLowerCase().includes(query) || e.tag.toLowerCase().includes(query)
-            );
-
-            renderEquipmentList(filtered);
+            renderEquipmentList(stage.equipment.filter(n => n.toLowerCase().includes(query)));
         }
 
-        // INSPECTION MODAL CONTROL
-        function openEquipModal(eq) {
-            activeModalEquipment = eq;
-            document.getElementById('modalEquipName').innerText = eq.name;
-            document.getElementById('modalEquipTag').innerText = `TAG: ${eq.tag}`;
-            document.getElementById('modalStatus').innerText = `${eq.status.toUpperCase()} / ACTIVE`;
-            
-            const modal = document.getElementById('equipModal');
-            modal.classList.remove('hidden');
-            playBeep(1000, 'sine', 0.05);
-        }
-
-        function closeModal() {
-            document.getElementById('equipModal').classList.add('hidden');
-            playBeep(400, 'sine', 0.05);
-        }
-
-        function toggleModalEquipState() {
-            if (!activeModalEquipment) return;
-            const current = activeModalEquipment.status;
-            activeModalEquipment.status = (current === "Normal") ? "Standby" : "Normal";
-            
-            document.getElementById('modalStatus').innerText = `${activeModalEquipment.status.toUpperCase()}`;
-            playBeep(1400, 'square', 0.1);
-
-            // Re-render
-            const stage = stagesData.find(s => s.id === activeStageId);
-            if (stage) renderEquipmentList(stage.equipment);
+        function renderDocs(docs) {
+            const section = document.getElementById('docsSection');
+            const list = document.getElementById('docsList');
+            list.innerHTML = '';
+            if (!docs || docs.length === 0) { section.classList.add('hidden'); return; }
+            section.classList.remove('hidden');
+            docs.forEach(([name, file]) => {
+                const a = document.createElement('a');
+                a.href = file;
+                a.className = "flex items-center justify-between bg-scada-bg/90 border border-scada-border hover:border-scada-cyan/60 p-3 rounded-lg transition group";
+                a.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <i class="fa-solid fa-file-pdf text-scada-cyan"></i>
+                        <span class="text-xs font-semibold text-slate-200 group-hover:text-scada-cyan transition">${name}</span>
+                    </div>
+                    <i class="fa-solid fa-download text-xs text-slate-500 group-hover:text-scada-cyan transition"></i>`;
+                list.appendChild(a);
+            });
         }
     </script>
 </body>
