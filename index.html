@@ -120,10 +120,12 @@
         const stagesData = [
             {
                 id: 1, name: "Recepción", icon: "fa-truck-field",
-                description: `
-                    <p>Recepción y clasificación inicial de materia prima (maíz crudo) proveniente del transporte terrestre.</p>
-                    <p>El grano desciende a través de <strong>tolvas de recepción</strong> de alto volumen hacia los sistemas de <strong>descargas mecánicas</strong> automatizadas, pasando por una etapa previa de <strong>prelimpieza</strong> para remover impurezas gruesas antes de su almacenamiento preliminar.</p>`,
-                equipment: ["Tolvas de Recepción", "Descargas Mecánicas", "Sistemas de Prelimpieza", "Básculas de Pesaje Entrada"],
+                        description: `
+            <p>Recepción y clasificación inicial de materia prima (maíz nacional e importado) proveniente del transporte terrestre.</p>
+            <p>Las gandolas y camiones se pesan en <strong>balanzas de pesaje estático</strong> y se toman <strong>muestras de control de calidad</strong>. Luego descargan en las <strong>tolvas de Recepción 1 y 2</strong>, protegidas con rejillas metálicas.</p>
+            <p>Desde las tolvas, <strong>transportadores de cadenas (BKT / Redler)</strong> llevan el grano hacia los <strong>elevadores de cangilones</strong>. En el cabezal del elevador, un <strong>sistema de aspiración con filtro de mangas</strong> extrae el polvo en suspensión.</p>
+            <p>En la prelimpieza, el grano pasa por un <strong>tamiz rotativo</strong> que remueve las impurezas gruesas, por las <strong>separadoras de grano</strong> para una clasificación fina (su residuo se destina a subproducto) y por un <strong>imán rotativo</strong> que retiene partículas metálicas. Finalmente se almacena en el <strong>silo de reposo</strong>, donde el grano se homogeniza temporalmente antes del secado.</p>`,
+        equipment: ["Balanzas de Pesaje Estático", "Tolvas de Descarga (Recepción 1 y 2)", "Transportadores de Cadenas BKT", "Elevadores de Cangilones", "Sistema de Aspiración y Filtro de Mangas", "Tamiz Rotativo", "Separadoras de Grano", "Imán Rotativo", "Silo de Reposo"],
                 docs: [["Equipos de Recepción y Preparación", "equipos-recepcion.pdf"]]
             },
             {
